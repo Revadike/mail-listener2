@@ -56,13 +56,14 @@ MailListener.prototype.stop = function() {
 };
 
 MailListener.prototype.restart = function() {
-  console.log('detaching existing listener');
   this.imap.removeAllListeners('mail');
   this.imap.removeAllListeners('update');
-
-  console.log('calling imap connect');
   this.imap.connect();
 };
+
+MailListener.prototype.sync = MailListener.prototype.refresh = MailListener.prototype.update = function() {
+  this.imap.emit('update');
+}
 
 function imapReady() {
   var self = this;
@@ -165,7 +166,6 @@ function parseUnread() {
           self.emit('error', err);
         });
       }, function (err) {
-        console.log('all process');
         if (err) {
           self.emit('error', err);
         }
